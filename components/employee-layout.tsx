@@ -2,9 +2,11 @@
 
 import type React from "react"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Bell, Home, Clock, User, MessageCircle, Gift } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -15,7 +17,33 @@ const navItems = [
 
 export function EmployeeLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const userName = "Luis Mendez"
+  const [userName, setUserName] = useState("")
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchUserData() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single()
+        if (profile) {
+          setUserName(profile.full_name)
+        }
+      }
+    }
+    fetchUserData()
+  }, [supabase])
+
+  const initials = userName
+    ? userName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .substring(0, 2)
+      .toUpperCase()
+    : "U"
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,10 +65,7 @@ export function EmployeeLayout({ children }: { children: React.ReactNode }) {
               </button>
               <Link href="/dashboard/cuenta">
                 <div className="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm">
-                  {userName
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
+                  {initials}
                 </div>
               </Link>
             </div>
@@ -59,9 +84,8 @@ export function EmployeeLayout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${
-                    isActive ? "text-accent" : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${isActive ? "text-accent" : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <span className="text-xs mt-1">{item.label}</span>
@@ -70,9 +94,8 @@ export function EmployeeLayout({ children }: { children: React.ReactNode }) {
             })}
             <Link
               href="/dashboard/invitar"
-              className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${
-                pathname === "/dashboard/invitar" ? "text-accent" : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${pathname === "/dashboard/invitar" ? "text-accent" : "text-muted-foreground hover:text-foreground"
+                }`}
             >
               <Gift className="w-5 h-5" />
               <span className="text-xs mt-1">Invitar</span>
