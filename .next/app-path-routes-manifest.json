@@ -1,0 +1,22 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/colaboradores/page": "/admin/colaboradores",
+  "/admin/configuracion/page": "/admin/configuracion",
+  "/admin/empresas/page": "/admin/empresas",
+  "/admin/page": "/admin",
+  "/admin/transacciones/page": "/admin/transacciones",
+  "/auth/callback/route": "/auth/callback",
+  "/auth/error/page": "/auth/error",
+  "/auth/login/page": "/auth/login",
+  "/dashboard/cuenta/page": "/dashboard/cuenta",
+  "/dashboard/historial/page": "/dashboard/historial",
+  "/dashboard/invitar/page": "/dashboard/invitar",
+  "/dashboard/page": "/dashboard",
+  "/dashboard/soporte/page": "/dashboard/soporte",
+  "/hr/colaboradores/page": "/hr/colaboradores",
+  "/hr/configuracion/page": "/hr/configuracion",
+  "/hr/page": "/hr",
+  "/hr/retiros/page": "/hr/retiros",
+  "/page": "/"
+}

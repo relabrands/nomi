@@ -1,0 +1,22 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/colaboradores/page": "app/admin/colaboradores/page.js",
+  "/admin/configuracion/page": "app/admin/configuracion/page.js",
+  "/admin/empresas/page": "app/admin/empresas/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/transacciones/page": "app/admin/transacciones/page.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/auth/error/page": "app/auth/error/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/dashboard/cuenta/page": "app/dashboard/cuenta/page.js",
+  "/dashboard/historial/page": "app/dashboard/historial/page.js",
+  "/dashboard/invitar/page": "app/dashboard/invitar/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/soporte/page": "app/dashboard/soporte/page.js",
+  "/hr/colaboradores/page": "app/hr/colaboradores/page.js",
+  "/hr/configuracion/page": "app/hr/configuracion/page.js",
+  "/hr/page": "app/hr/page.js",
+  "/hr/retiros/page": "app/hr/retiros/page.js",
+  "/page": "app/page.js"
+}

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/hr/layout,_N_T_/hr/retiros/layout,_N_T_/hr/retiros/page,_N_T_/hr/retiros"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/hr/retiros/__PAGE__",
+    "/hr/retiros",
+    "/hr",
+    "/_index",
+    "/_head"
+  ]
+}
