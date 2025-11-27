@@ -121,11 +121,11 @@ export default function EmpresasPage() {
         companies.map((c) =>
           c.id === editingCompany.id
             ? {
-                ...c,
-                credit_limit: Number.parseFloat(editForm.creditLimit) || c.credit_limit,
-                availability_percentage: Number.parseInt(editForm.withdrawalPercentage) || c.availability_percentage,
-                payment_frequency: editForm.paymentFrequency,
-              }
+              ...c,
+              credit_limit: Number.parseFloat(editForm.creditLimit) || c.credit_limit,
+              availability_percentage: Number.parseInt(editForm.withdrawalPercentage) || c.availability_percentage,
+              payment_frequency: editForm.paymentFrequency,
+            }
             : c,
         ),
       )
@@ -138,7 +138,8 @@ export default function EmpresasPage() {
   const handleAddCompany = async () => {
     setIsSaving(true)
 
-    const { data, error } = await supabase
+    // 1. Create Company Record
+    const { data: companyData, error: companyError } = await supabase
       .from("companies")
       .insert({
         name: newCompanyForm.name,
@@ -157,11 +158,27 @@ export default function EmpresasPage() {
       .select()
       .single()
 
-    if (error) {
-      console.log("[v0] Error creating company:", error)
-      alert("Error al crear la empresa: " + error.message)
-    } else if (data) {
-      setCompanies([data, ...companies])
+    if (companyError) {
+      console.log("[v0] Error creating company:", companyError)
+      alert("Error al crear la empresa: " + companyError.message)
+      setIsSaving(false)
+      return
+    }
+
+    if (companyData) {
+      // 2. Create Admin User for the Company
+      const { createCompanyAdmin } = await import("@/app/actions/auth-actions")
+      const result = await createCompanyAdmin(newCompanyForm.email, companyData.id)
+
+      if (result.error) {
+        alert(`Empresa creada, pero error al crear usuario: ${result.error}`)
+      } else {
+        alert(
+          `Empresa y Usuario creados exitosamente!\n\nCredenciales enviadas a ${newCompanyForm.email}:\nUsuario: ${newCompanyForm.email}\nContraseña: ${result.password}`,
+        )
+      }
+
+      setCompanies([companyData, ...companies])
       setAddDialogOpen(false)
       setNewCompanyForm({
         name: "",
@@ -432,13 +449,12 @@ export default function EmpresasPage() {
                             </div>
                             <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full ${
-                                  usagePercent >= 90
+                                className={`h-full rounded-full ${usagePercent >= 90
                                     ? "bg-red-500"
                                     : usagePercent >= 80
                                       ? "bg-amber-500"
                                       : "bg-emerald-500"
-                                }`}
+                                  }`}
                                 style={{ width: `${Math.min(usagePercent, 100)}%` }}
                               />
                             </div>

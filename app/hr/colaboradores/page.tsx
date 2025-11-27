@@ -100,31 +100,26 @@ export default function ColaboradoresHRPage() {
     if (!company) return
 
     setIsSaving(true)
-    const generatedPassword = generatePassword()
     const salary = Number.parseFloat(newEmployeeForm.monthlySalary) || 0
     const maxWithdrawal = (salary * companyWithdrawalPercentage) / 100
 
-    const { data, error } = await supabase
-      .from("employees")
-      .insert({
-        company_id: company.id,
-        employee_code: newEmployeeForm.employeeCode,
-        cedula: newEmployeeForm.cedula,
-        full_name: newEmployeeForm.name,
-        email: newEmployeeForm.email,
-        salary: salary,
-        available_balance: maxWithdrawal,
-        total_withdrawn: 0,
-        status: "active",
-      })
-      .select()
-      .single()
+    // Call Server Action to create Auth User and Employee Record
+    const { createEmployeeUser } = await import("@/app/actions/auth-actions")
+    const result = await createEmployeeUser({
+      email: newEmployeeForm.email,
+      full_name: newEmployeeForm.name,
+      cedula: newEmployeeForm.cedula,
+      employee_code: newEmployeeForm.employeeCode,
+      salary,
+      company_id: company.id,
+      available_balance: maxWithdrawal,
+    })
 
-    if (error) {
-      console.log("[v0] Error adding employee:", error)
-      alert("Error al agregar colaborador: " + error.message)
-    } else if (data) {
-      setEmployees([data, ...employees])
+    if (result.error) {
+      console.log("[v0] Error adding employee:", result.error)
+      alert("Error al agregar colaborador: " + result.error)
+    } else if (result.success && result.employee) {
+      setEmployees([result.employee, ...employees])
       setAddDialogOpen(false)
       setNewEmployeeForm({
         employeeCode: "",
@@ -135,7 +130,7 @@ export default function ColaboradoresHRPage() {
       })
 
       alert(
-        `Colaborador agregado exitosamente!\n\nSe enviará un correo de bienvenida a ${data.email} con:\n- Usuario: ${data.email}\n- Contraseña temporal: ${generatedPassword}`,
+        `Colaborador agregado exitosamente!\n\nSe enviará un correo de bienvenida a ${result.employee.email} con:\n- Usuario: ${result.employee.email}\n- Contraseña temporal: ${result.password}`,
       )
     }
     setIsSaving(false)
@@ -174,9 +169,9 @@ export default function ColaboradoresHRPage() {
         employees.map((emp) =>
           emp.id === editingEmployee.id
             ? {
-                ...editingEmployee,
-                available_balance: maxWithdrawal,
-              }
+              ...editingEmployee,
+              available_balance: maxWithdrawal,
+            }
             : emp,
         ),
       )
